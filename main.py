@@ -1,8 +1,9 @@
-import DatabaseConn
-import TransactionHandler
+from datetime import date
+
 import DataHandler
 import DataVisualization
-from datetime import date
+import DatabaseConn
+import TransactionHandler
 
 rent = 1950
 
@@ -24,7 +25,7 @@ def insertRecords(filename, recordtype='creditCard'):
     db.populate_transactions(engine.list_transactions, table_name=tablename)
 
 
-def getCurrentMonthYear(month=None,year=None):
+def getCurrentMonthYear(month=None, year=None):
     today = date.today()
     if month is None:
         month = '%02d' % (today.month - 1)
@@ -36,13 +37,13 @@ def getCurrentMonthYear(month=None,year=None):
     return month_year
 
 
-def main(targetStart=None,targetEnd=None,targetYear=None):
+def main(targetStart=None, targetEnd=None, targetYear=None):
     if targetStart is None or targetEnd is None:
-        targetStart=getCurrentMonthYear()
-        targetEnd=getCurrentMonthYear()
+        targetStart = getCurrentMonthYear()
+        targetEnd = getCurrentMonthYear()
 
-    targetStart=getCurrentMonthYear(targetStart,targetYear)
-    targetEnd=getCurrentMonthYear(targetEnd,targetYear)
+    targetStart = getCurrentMonthYear(targetStart, targetYear)
+    targetEnd = getCurrentMonthYear(targetEnd, targetYear)
     data_handler = DataHandler.DataHandler()
     dv = DataVisualization.DataVisualizer(data_handler)
 
@@ -75,20 +76,12 @@ def main(targetStart=None,targetEnd=None,targetYear=None):
                                                 range_upper=targetEnd + '-31')
     print("Credit Card: " + monthly_sum_credit.__str__())
 
-    monthly_sum_savings = data_handler.getTotals(column='amount', tablename='savingsAccount',
-                                                 range_lower=targetStart + '-01',
-                                                 range_upper=targetEnd + '-31')
-    # print("Savings Net: "+monthly_sum_savings.__str__())
 
     ubs_income = data_handler.getIncome(column='amount', tablename='checkingAccount',
                                         range_lower=targetStart + '-01',
                                         range_upper=targetEnd + '-31')
     print("UBS Income: " + ubs_income.__str__())
 
-    monthly_sum_checking = data_handler.getTotals(column='amount', tablename='checkingAccount',
-                                                  range_lower=targetStart + '-01',
-                                                  range_upper=targetEnd + '-31')
-    print("Net: " + (ubs_income - monthly_sum_credit - rent).__str__())
 
     month_over_month_income = data_handler.checkMonthOverMonth(column='amount', tablename='checkingAccount')
     dv.lineChartMonthOverMonth(data=month_over_month_income, title="UBS Income Month over Month")
@@ -101,6 +94,4 @@ def main(targetStart=None,targetEnd=None,targetYear=None):
                                                                 type=DataHandler.DataHandler.getSavingsBalance)
     dv.lineChartMonthOverMonth(data=month_over_month_savings, title="Savings Balance Month over Month Expenses")
 
-
-main(targetStart=1,targetEnd=12,targetYear=2020)
-
+main(targetStart=1, targetEnd=7, targetYear=2021)
