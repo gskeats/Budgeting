@@ -15,9 +15,9 @@ class DataVisualizer():
             data = self.data_handler.construct_sum_by_column(column='description', numeric='debit',
                                                              tablename='creditCard', range_lower='2021-01-01',
                                                              range_upper='2021-07-31')
+
         dataframe = pandas.DataFrame(data=data,columns=['Location', 'AggregateSpend'])
-
-
+        dataframe=dataframe.nlargest(number,columns=['AggregateSpend'])
         plot = px.bar(dataframe,x="Location", y="AggregateSpend",title=title)
         plot.show()
 
